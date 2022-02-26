@@ -37,7 +37,7 @@ const Gallery: React.FC = () => {
 
   useEffect(() => {
     setValue(`${window.innerHeight}px`);
-  }, []);
+  }, [setValue]);
 
   const handleTouchStart: TouchEventHandler = (e) => {
     touchStartX.current = e.targetTouches[0].clientX;
@@ -75,12 +75,6 @@ const Gallery: React.FC = () => {
     );
   };
 
-  useEffect(() => {
-    if (shouldChangeIndex()) {
-      handlePreviewSwipe();
-    }
-  }, [dragDistance]);
-
   const handlePreviewTouchMove: TouchEventHandler = (e) => {
     if (previewTouchStartX.current === 0) {
       previewTouchStartX.current = e.targetTouches[0].clientX;
@@ -103,6 +97,12 @@ const Gallery: React.FC = () => {
     previewTouchEndX.current = 0;
   };
 
+  useEffect(() => {
+    if (shouldChangeIndex()) {
+      handlePreviewSwipe();
+    }
+  }, [dragDistance, shouldChangeIndex, handlePreviewSwipe]);
+
   return (
     <Container value={value} ref={(ref) => (containerRef.current = ref)}>
       <Slider
@@ -118,7 +118,7 @@ const Gallery: React.FC = () => {
         }
       >
         {images.map((image) => (
-          <Slide imageUrl={image} />
+          <Slide key={image} imageUrl={image} />
         ))}
       </Slider>
       <Preview
